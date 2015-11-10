@@ -7,7 +7,8 @@ using System.Threading;
 
 namespace EventTest
 {
-
+    // デリゲートとは処理を他に投げ込む場合に間に入るのりのようなもの
+    // という理解
     delegate void KeyboadEventHandler(char eventCode);
 
     /// <summary>
@@ -15,15 +16,18 @@ namespace EventTest
     /// </summary>
     class KeyboardEventLoop
     {
-        KeyboadEventHandler _onKeyDownHandler;
+        public event KeyboadEventHandler OnKeyDown;
+        //public KeyboadEventHandler OnKeyDown;
+
+        public KeyboardEventLoop() { }
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="onKeyDown"></param>
+        /// <param name="onKeyDown">イベントハンドラ？</param>
         public KeyboardEventLoop(KeyboadEventHandler onKeyDown)
         {
-            _onKeyDownHandler = onKeyDown;
+            OnKeyDown += onKeyDown;
         }
 
         public Task Start(CancellationToken ct)
@@ -39,12 +43,11 @@ namespace EventTest
                 char eventCode = (line == null || line.Length == 0) ? '\0' : line[0];
 
                 // イベント処理はデリゲートを通して他のメソッドに任せる
-                _onKeyDownHandler(eventCode);
+                OnKeyDown(eventCode);
             }
         }
 
     }
-
 
     class Program
     {
@@ -108,9 +111,6 @@ namespace EventTest
                     break;
             }
         }
-
-
-
 
         private static void WriteHelp()
         {
