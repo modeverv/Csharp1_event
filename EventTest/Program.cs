@@ -60,14 +60,13 @@ namespace EventTest
             WriteHelp();
 
             var cts = new CancellationTokenSource();
+            //                                    ラムダ式　ctsはクロージャで引き込んでる？
             var eventLoop = new KeyboardEventLoop(code => OnKeyDown(code, cts));
 
             Task.WhenAll(
                 eventLoop.Start(cts.Token),
                 TimerLoop(cts.Token)
                 ).Wait();
-
-
         }
 
         private static async Task TimerLoop(CancellationToken ct)
